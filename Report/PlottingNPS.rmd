@@ -1,0 +1,377 @@
+---
+title: 'Plotting NPS Data'
+subtitle: 'A Step-by-Step Walkthrough for Plotting NPS Data using GGPlot'
+author: 'Author: [Chris Mahoney](https://www.linkedin.com/in/chrimaho/)'
+date: 'Published: TBA'
+#date: 'Date: `r format(Sys.Date(), "%d/%b/%Y")`'
+toc-title: Contents
+output:
+  html_notebook:
+    highlight: haddock
+    number_sections: yes
+    theme: lumen
+    toc: yes
+    toc_depth: 4
+    toc_float: no
+    includes:
+      in_header: header.html
+      after_body: footer.html
+  html_document:
+    code_download: yes
+    highlight: haddock
+    number_sections: yes
+    template: default_toc.html
+    theme: lumen
+    toc: yes
+    toc_depth: 4
+    toc_float:
+      collapsed: no
+    includes:
+      in_header: header.html
+      after_body: footer.html
+---
+
+<style>
+.math {
+    font-size: 120%;
+    font-style: normal;
+    font-family: "Cambria Math";
+}
+.column {
+    float: left;
+    width: 50%;
+    border: 1px solid black;
+}
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+h1, .h1 {
+    margin-top: 40px;
+    font-weight: bold;
+}
+h2, .h2 {
+    margin-top: 40px;
+    margin-left: 40px;
+}
+</style>
+
+
+<!-- Acknowledgements: -->
+
+
+
+<!-- Set Up Environment -->
+
+```{r SET Function, echo=FALSE, eval=TRUE}
+# Define function to load packages ----
+LoadPackages <- function(packages, install=FALSE) {
+    
+    # Input:
+    # - 'packages' : An atomic string or a string vector of the list of packages to load.
+    # - 'install'  : A boolean value for whether or not to install the packages that are missing.
+    
+    # Output:
+    # - A logical result (TRUE of FALSE) for if they were successfully loaded.
+    
+    # Validations:
+    stopifnot(is.character(packages))
+    stopifnot(is.logical(install))
+    
+    # Remove all packages. Note: The suppression functions are to limit the amount of printed output.
+    for (package in .packages()) {
+        if (!package %in% c("parallel", "stats", "graphics", "grDevices", "datasets", "utils", "methods", "base")) { #THESE PACKAGES ARE PART OF BASE!! YOU CANNOT REMOVE THEM!! But you can remove everything else...
+            suppressPackageStartupMessages ( 
+                suppressMessages ( 
+                    suppressWarnings ( 
+                        detach ( paste0("package:", package) #The `detach()` function is like the reverse of `library()` or `require()`.
+                                 , unload = TRUE
+                                 , character.only = TRUE
+                        )
+                    )
+                )
+            )
+        }
+    }
+    
+    # Install all defined packages
+    if (install==TRUE) {
+        for (package in packages) {
+            if (!package %in% installed.packages()) { #The `installed.packages()` function  returns a vector of all the installed packages...
+                install.packages ( package
+                                   # , quiet = TRUE
+                                   # , verbose = FALSE
+                                   , dependencies = TRUE
+                )
+            }
+        }
+    }
+    
+    # Load all defined packages
+    for (package in packages) { #Need to loop through a second time because it does funny things if you combine the `install.packages()` and `library()` steps in to one.
+        if (!package %in% .packages()) { #`.packages()` returns a vector of all the loaded packages...
+            suppressPackageStartupMessages (
+                library ( package
+                          , character.only = TRUE
+                          , quietly = TRUE
+                          , warn.conflicts = FALSE
+                          , verbose = FALSE
+                )
+            )
+        }
+        if (!package %in% .packages()) {
+            stop(paste0("Package '", package, "' was not loaded properly."))
+        }
+    }
+    
+    # Return
+    return(TRUE)
+    
+}
+
+#### Three string manipulation functions (LEFT,RIGHT,MID) ####
+str_left <- function(string, num_chars) {
+    
+    # Input:
+    # - 'string' is the text string you want to select from; must be an character type.
+    # - 'num_chars' is the number of characters that you want to select; must be an atomic numeric type.
+    
+    # Output:
+    # - A text string of length 'num_chars' that corresponds to the left most number of characters from the 'string' option.
+    
+    # Validations:
+    stopifnot(is.character(string))
+    stopifnot(is.numeric(num_chars))
+    stopifnot(is.atomic(num_chars))
+    
+    # Do work
+    return <- substr(string, 1, num_chars)
+    
+    # Return
+    return(return)
+    
+}
+
+str_mid <- function(string, start_num, num_chars) {
+    
+    # Input:
+    # - 'string' is the text string you want to select from; must be an atopic string.
+    # - 'start_num' is the starting position of the mid-text string you want to select from; must be an atomic numeric type.
+    # - 'num_chars' is the number of characters that you want to select; must be an atomic numeric type.
+    
+    # Output:
+    # - A text string of length 'num_chars' that corresponds to the characters from the 'start_num' starting position from the 'string' option.
+    
+    # Validations:
+    stopifnot(is.character(string))
+    stopifnot(is.numeric(start_num))
+    stopifnot(is.atomic(start_num))
+    stopifnot(is.numeric(num_chars))
+    stopifnot(is.atomic(num_chars))
+    
+    # Do work
+    return <- substr(string, start_num, start_num + num_chars - 1)
+    
+    # Return
+    return(return)
+    
+}
+
+str_right <- function(string, num_chars) {
+    
+    # Input:
+    # - 'string' is the text string you want to select from; must be an character type.
+    # - 'num_chars' is the number of characters that you want to select; must be an atomic numeric type.
+    
+    # Output:
+    # - A text string of length 'num_chars' that corresponds to the right most number of characters from the 'string' option.
+    
+    # Validations:
+    stopifnot(is.character(string))
+    stopifnot(is.numeric(num_chars))
+    stopifnot(is.atomic(num_chars))
+    
+    # Do work
+    return <- substr(string, nchar(string) - (num_chars - 1), nchar(string))
+    
+    # Return
+    return(return)
+    
+}
+
+```
+
+
+```{r LOAD Packages with Function, echo=FALSE, eval=TRUE, results="hide", warning=FALSE, message=FALSE}
+LoadPackages(c("tidyverse", "captioner", "pastecs", "knitr", "kableExtra"))
+```
+
+
+```{r SET Defaults, echo=FALSE, eval=TRUE}
+# Set Default themes
+theme_set(theme_bw())
+theme_update(plot.title = element_text(hjust=0.5)
+            ,plot.subtitle = element_text(hjust=0.5)
+            )
+
+# Set Default table and figure sizes
+knitr::opts_chunk$set(rows.print=200, cols.print=30, fig.width=10, fig.height=7)
+
+# Set Default rounding length
+options(digits = 4)
+options(scipen = 999)
+
+# Set the Table and Figure caption
+table <- captioner(prefix="Table")
+figure <- captioner(prefix="Figure")
+```
+
+
+<!-- Report -->
+
+# Introduction {#introduction}
+
+
+# Process {#process}
+
+## Load Packages {#load}
+
+Load up the packages that will be used.
+
+```{r LOAD Packages, echo=TRUE, eval=TRUE}
+library(tidyverse)
+library(captioner)
+library(pastecs)
+library(knitr)
+library(kableExtra)
+```
+
+
+## Generate NPS Data {#generate}
+
+Generate NPS Scores using `sample()` function.
+
+```{r GEN NPS Data, echo=TRUE, eval=TRUE}
+set.seed(111)
+NpsData <- sample(x=5:10, size=10000, replace=TRUE)
+```
+
+
+## Review NPS Data {#review}
+
+Describe NPS data, using `summarise_all()` function.
+
+```{r GEN Description of NPS Data, echo=TRUE, eval=TRUE}
+NpsData %>%
+    data.frame() %>% 
+    summarise_all(list(min=min, max=max, mean=mean, std=sd, count=NROW)) %>%
+    gather("Statistic","Value") %>% 
+    mutate_at("Value", round, 1) %>% 
+    kable(align="l") %>% 
+    kable_styling(bootstrap_options=c("striped","bordered","condensed")
+                 ,full_width=FALSE
+                 ,position="left"
+                 )
+```
+
+
+## Summarise NPS Data {#summarise}
+
+Summarise the data again to get the mean, using `summarise_all()`.
+
+```{r GEN NPS Summary mean, echo=TRUE, eval=TRUE}
+# Generate
+NpsScore <- data.frame(Score=NpsData) %>% 
+    summarise_all(mean) %>% 
+    mutate(Name="NPS")
+
+# Review
+NpsScore %>% 
+    kable(align="l") %>% 
+    kable_styling(bootstrap_options=c("striped","bordered","condensed")
+                 ,full_width=FALSE
+                 ,position="left"
+                 )
+```
+
+
+## Generate NPS Data Frame {#create}
+
+Generate data frame that will be used to calculate the final plot.
+
+```{r GEN NPS Data.Frame, echo=TRUE, eval=TRUE}
+# Generate
+NpsFrame <- seq(from=1, to=10, by=1) %>% 
+    data.frame(NPS=.) %>% 
+    mutate(Name="NPS"
+           ,Category="Promoters"
+           ,Category=ifelse(NPS<9,"Passives",Category)
+           ,Category=ifelse(NPS<7,"Detractors",Category)
+           ,Category=factor(Category, levels=c("Promoters", "Passives", "Detractors"))
+           ,NPS=factor(NPS, levels=1:10)
+           )
+
+# Review
+NpsFrame %>% 
+    kable(align="l") %>% 
+    kable_styling(bootstrap_options=c("striped","bordered","condensed")
+                 ,full_width=FALSE
+                 ,position="left"
+                 )
+```
+
+
+## Join them all together {#join}
+
+Join them together using `left_join()`.
+
+```{r JOIN data.frames together, echo=TRUE, eval=TRUE}
+# Generate
+FinalData <- left_join(x=NpsFrame
+                       ,y=NpsScore
+                       ,by="Name"
+                       )
+
+# Review
+FinalData %>% 
+    kable(align="l") %>% 
+    kable_styling(bootstrap_options=c("striped","bordered","condensed")
+                 ,full_width=FALSE
+                 ,position="left"
+                 )
+```
+
+## Plot the final output {#plot}
+
+Generate the final output using `ggplot()`, along with `geom_bar()`, `geom_point()`, and `geom_label()`.
+
+```{r Plot the result, echo=TRUE, eval=TRUE, fig.width=15, fig.height=3}
+FinalData %>% 
+    ggplot(aes(Name)) +
+    geom_bar(aes(fill=factor(Category)), colour="darkgrey", width=0.5) +
+    geom_point(data=function(x) {x %>% select(Name, Score) %>% mutate(Score=round(Score,2)) %>% distinct}
+               ,aes(y=Score)
+               ,shape="plus"
+               ,size=20
+               ) +
+    geom_label(data=function(x) {x %>% select(Name, Score) %>% mutate(Score=round(Score,2)) %>% distinct}
+               ,stat="identity"
+               ,aes(y=Score, label=Score)
+               ,size=5
+               ) +
+    scale_y_continuous(breaks=seq(0,10,1), limits=c(0,10)) +
+    scale_fill_manual(values=c("#66bd63", "#fdae61", "#d73027")) +
+    theme(axis.text.y.left=element_blank()) +
+    coord_flip() +
+    labs(title="NPS Score"
+         # ,subtitle="Add"
+         ,fill="Category"
+         ,y="NPS Score"
+         ,x="NPS"
+    )
+```
+
+
+# Conclusion {#conclusion}
+
