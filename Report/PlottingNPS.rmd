@@ -6,16 +6,6 @@ date: 'Published: TBA'
 #date: 'Date: `r format(Sys.Date(), "%d/%b/%Y")`'
 toc-title: Contents
 output:
-  html_notebook:
-    highlight: haddock
-    number_sections: yes
-    theme: lumen
-    toc: yes
-    toc_depth: 4
-    toc_float: no
-    includes:
-      in_header: header.html
-      after_body: footer.html
   html_document:
     code_download: yes
     highlight: haddock
@@ -26,6 +16,16 @@ output:
     toc_depth: 4
     toc_float:
       collapsed: no
+    includes:
+      in_header: header.html
+      after_body: footer.html
+  html_notebook:
+    highlight: haddock
+    number_sections: yes
+    theme: lumen
+    toc: yes
+    toc_depth: 4
+    toc_float: no
     includes:
       in_header: header.html
       after_body: footer.html
