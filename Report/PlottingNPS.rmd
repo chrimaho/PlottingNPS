@@ -2,8 +2,7 @@
 title: 'Plotting NPS Data'
 subtitle: 'A Step-by-Step Walkthrough for Plotting NPS Data using GGPlot'
 author: 'Author: [Chris Mahoney](https://www.linkedin.com/in/chrimaho/)'
-date: 'Published: TBA'
-#date: 'Date: `r format(Sys.Date(), "%d/%b/%Y")`'
+date: 'Published: 29/Jan/2020'
 toc-title: Contents
 output:
   html_document:
@@ -454,11 +453,17 @@ FinalData %>%
         )
 ```
 
-```{r SAVE Bar Plot, echo=FALSE, eval=TRUE}
+```{r SAVE Bar Plot, echo=FALSE, eval=TRUE, fig.width=10, fig.height=4}
 ggsave(plot=last_plot()
       ,filename="Images/BarPlot.png"
       ,width=15
       ,height=3
+      )
+
+ggsave(plot=last_plot()
+      ,filename="Images/BarPlotSmall.png"
+      ,width=10
+      ,height=4.5
       )
 ```
 
@@ -543,10 +548,10 @@ As seen, the Net Promoter Score is a useful metric to see the percentage of cust
 
 **Publications**: This report is also published on the following sites:
 
-1. RPubs: [RPubs/chrimaho/AusEnergyPrices](http://rpubs.com/chrimaho/PlottingNPS)
+1. RPubs: [RPubs/chrimaho/PlottingNPS](http://rpubs.com/chrimaho/PlottingNPS)
 1. GitHub: [GitHub/chrimaho/PlottingNPS](https://github.com/chrimaho/PlottingNPS)
-1. Medium: [Medium/chrimaho/AusEnergyPrices](https://medium.com/@chrimaho/2958b642a51f?source=friends_link&sk=382557ae6dd6227d004eb42a374fbb8f)
+1. Medium: [Medium/chrimaho/PlottingNPS](https://medium.com/@chrimaho/plottingnps-2958b642a51f?source=friends_link&sk=382557ae6dd6227d004eb42a374fbb8f)
 
 **Change Log:** This publication was modified on the following dates:
 
-1. 
+1. 29/Jan/2020: Original Publication Date
