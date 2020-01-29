@@ -536,17 +536,16 @@ ggsave(plot=last_plot()
 
 # Conclusion {#Conclusion}
 
-This is where you write a conclusion.
+As seen, the Net Promoter Score is a useful metric to see the percentage of customers who are Promoters, Passives or Detractors of the business. This metric can be visualised in a simple BarPlot, with a static value displayed on the chart, or it can be visualised as a DensityPlot, showing the proportion of customers in the different categories. Both of these methodologies are provided in this Vignette, with a step-by-step guide from data manipulation to plotting.
 
 
 # Post Script {#PostScript}
 
 **Publications**: This report is also published on the following sites:
 
-1. RPubs: [RPubs/chrimaho/AusEnergyPrices](http://rpubs.com/chrimaho/AusEnergyPrices)
-1. GitHub: [GitHub/chrimaho/AusEnergyPrices](https://github.com/chrimaho/AusEnergyPrices)
-1. Medium: [Medium/chrimaho/AusEnergyPrices](https://medium.com/@chrimaho/ausenergyprices-737b9cbe5540?sk=8d0dd0bc3167c2ce59d9b389d5c443af)
-1. LinkedIn: [LinkedIn/chrimaho/AusEnergyPrices](https://www.linkedin.com/pulse/future-australian-energy-prices-chris-mahoney)
+1. RPubs: [RPubs/chrimaho/AusEnergyPrices](http://rpubs.com/chrimaho/PlottingNPS)
+1. GitHub: [GitHub/chrimaho/PlottingNPS](https://github.com/chrimaho/PlottingNPS)
+1. Medium: [Medium/chrimaho/AusEnergyPrices](https://medium.com/@chrimaho/2958b642a51f?source=friends_link&sk=382557ae6dd6227d004eb42a374fbb8f)
 
 **Change Log:** This publication was modified on the following dates:
 
