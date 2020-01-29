@@ -1,0 +1,10 @@
+name: Publish Document
+title:
+username:
+account: rpubs
+server: rpubs.com
+hostUrl: rpubs.com
+appId: https://api.rpubs.com/api/v1/document/569620/e4774a942e7448a8b5f3450558befe00
+bundleId: https://api.rpubs.com/api/v1/document/569620/e4774a942e7448a8b5f3450558befe00
+url: http://rpubs.com/chrimaho/569620
+when: 1580281386.05477
