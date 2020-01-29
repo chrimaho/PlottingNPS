@@ -32,11 +32,11 @@ output:
 ---
 
 <style>
-<!-- .math { -->
-<!--     font-size: 120%; -->
-<!--     font-style: normal; -->
-<!--     font-family: "Cambria Math"; -->
-<!-- } -->
+.math {
+    <!-- font-size: 120%; -->
+    font-style: normal;
+    font-family: "Cambria Math";
+}
 .column {
     float: left;
     width: 50%;
@@ -233,12 +233,12 @@ The Net Promoter Score (NPS) is a trusted metric used by countless business to d
 The calculation of the NPS value is quite simple: $NPS = \%Promoters - \%Detractors$
 
 
-There are two options that can be used to plot the NPS Value:
+There are two options that can be used to visualise the NPS Value:
 
 1. First is in the true essence of the metric, which is a bar plot, the the NPS score displayed on the plot.
 2. Second is to display a density plot for the data.
 
-This Vignette is provides a helpful guide to visualise the NPS data for both these methods,, using [`ggplot2`](https://ggplot2.tidyverse.org/) in the [`R`](https://www.r-project.org/) programming language.
+This Vignette is provides a helpful guide to visualise the NPS data for both these methods, using [`ggplot2`](https://ggplot2.tidyverse.org/) in the [`R`](https://www.r-project.org/) programming language.
 
 
 # Set Up {#SetUp}
@@ -298,7 +298,7 @@ NpsData %>%
 ```
 
 
-# Option One: Visualise using Bar Plot {#BarPlot}
+# Option One: Visualise Bar Plot {#BarPlot}
 
 ## Summarise NPS Data {#GenerateScore}
 
@@ -348,7 +348,7 @@ NpsScore %>%
 
 ## Generate BarPlot Data Frame {#GenerateBar}
 
-In order to properly visualise the NPS score, an empty data frame is generated, with one row being eich of the possible scores. The reason for this will be explained in a later step. The way that this data is generated is by using the `seq()` function to create an ordered sequence of numbers from $0$ to $10$, incrementing by $1$ each time.
+In order to properly visualise the NPS score, an empty data frame is generated, with one row being each of the possible scores. The reason for this is to allow for the Bar Plot to be adequately displayed. The way that this data is generated is by using the `seq()` function to create an ordered sequence of numbers from $0$ to $10$, incrementing by $1$ each time.
 
 ```{r GEN Bar Empty Data.Frame, echo=TRUE, eval=TRUE}
 NpsFrame <- seq(from=0, to=10, by=1) %>% 
@@ -402,7 +402,7 @@ FinalData %>%
 
 ## Plot the final output {#PlotNps}
 
-Finally, the result is plotted using the `ggplot` package and the following aesthetics: `geom_bar()`, `geom_point()`, and `geom_label()`.
+Finally, the result is plotted using the `ggplot()` function and the following layers: `geom_bar()`, `geom_point()`, and `geom_label()`.
 
 The following steps were followed:
 
@@ -410,7 +410,7 @@ The following steps were followed:
 1. Add a `geom_bar()` layer, using the `Category` variable to determine which colours to use to fill the column, then add a border around the categories using the colour 'DarkGrey', and give it a width of $0.5$ units.
 1. Add a `geom_point()` layer, using the following arguments:
 
-    1. '`data`' is created using an anonymous function. This is so that the data used by the `ggplot()` function can be manipulated, without using another external variable. The manipulation was effecively used to create a single NPS score which can be used in this layer.
+    1. '`data`' is created using an anonymous function. This is so that the data used by the `ggplot()` function can be manipulated, without using another external variable. The manipulation was effectively used to create a single NPS score which can be used in this layer.
     1. '`aes`' is the aesthetic used for the `y` axis; which in this instance is the NPS score. This is used to determine where on the plot the point should be placed.
     1. '`shape`' is a `plus` symbol, which is used to determine the exact location of the point, as convenient for the human eye to see.
     1. '`size`' is the size of the symbol, which in this instance is $25$ units.
@@ -423,7 +423,7 @@ The following steps were followed:
     1. '`size`' is used to determine the size of the label; which in this instance is $5$ units.
     
 1. Determine how many breaks should be used, and the limits of the `y` axis, using the `scale_y_continuous()` layer.
-1. Determine the colours that should be used in the three differenet Categories, using the `scale_fill_manual()` layer.
+1. Determine the colours that should be used in the three different Categories, using the `scale_fill_manual()` layer.
 1. Hide the axis text for the `y` axis, using the `axis.text.y.left` argument of the `theme()` layer.
 1. Flip the coordinates of the plot, so that it appears to be a bar from left to right, using the `coord_flip()` layer.
 1. Label the axes, using the `labs()` layer, to ensure that the correct information is displayed in the correct positions.
@@ -463,7 +463,7 @@ ggsave(plot=last_plot()
 ```
 
 
-# Option Two: Visualise using density plot {#DensityPlot}
+# Option Two: Visualise Density Plot {#DensityPlot}
 
 ## Generate DensityPlot Data Frame {#GenerateDensity}
 
